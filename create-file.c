@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define BUFFER_SIZE 8192
 #define FILE_SIZE (1024 * 1024 * 100)
 #define FILENAME "testfile.bin"
 
@@ -11,15 +12,15 @@ int main() {
         return 1;
     }
 
-    char *buffer = (char *)malloc(8192);
+    char *buffer = (char *)malloc(BUFFER_SIZE);
     if (buffer == NULL) {
         perror("Failed to allocate memory");
         fclose(file);
         return 1;
     }
 
-    for (size_t i = 0; i < FILE_SIZE / 8192; i++) {
-        fwrite(buffer, 8192, 1, file);
+    for (size_t i = 0; i < FILE_SIZE / BUFFER_SIZE; i++) {
+        fwrite(buffer, BUFFER_SIZE, 1, file);
     }
 
     free(buffer);

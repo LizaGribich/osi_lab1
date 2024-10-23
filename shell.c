@@ -27,8 +27,18 @@ int main() {
 
         QueryPerformanceCounter(&start);
 
-        if (!CreateProcess(NULL, command, NULL, NULL, FALSE, 0, NULL, NULL, &si,
-                           &pi)) {
+        if (!CreateProcess(
+                NULL,           // lpApplicationName: путь к исполняемому файлу
+                command,        // lpCommandLine: командная строка для выполнения
+                NULL,           // lpProcessAttributes: NULL
+                NULL,           // lpThreadAttributes: NULL
+                FALSE,          // bInheritHandles: FALSE
+                0,              // dwCreationFlags: 0
+                NULL,           // lpEnvironment: NULL
+                NULL,           // lpCurrentDirectory: NULL
+                &si,            // lpStartupInfo: указатель на STARTUPINFO
+                &pi             // lpProcessInformation: указатель на PROCESS_INFORMATION
+        )) {
             printf("Failed to start process (%d)\n", GetLastError());
             continue;
         }

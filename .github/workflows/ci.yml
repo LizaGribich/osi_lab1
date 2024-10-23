@@ -27,7 +27,7 @@ jobs:
       - name: Run tests
         working-directory: build\Debug
         run: |
-          & .\test.exe
+           .\test.exe
   
 
   lint:
