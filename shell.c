@@ -3,11 +3,11 @@
 #include <windows.h>
 
 int main() {
-    char command[1024];
-    STARTUPINFO si;
+    char                command[1024];
+    STARTUPINFO         si;
     PROCESS_INFORMATION pi;
-    LARGE_INTEGER frequency, start, end;
-    double elapsedTime;
+    LARGE_INTEGER       frequency, start, end;
+    double              elapsedTime;
 
     ZeroMemory(&si, sizeof(si));
     si.cb = sizeof(si);
@@ -28,17 +28,17 @@ int main() {
         QueryPerformanceCounter(&start);
 
         if (!CreateProcess(
-                NULL,           // lpApplicationName: путь к исполняемому файлу
-                command,        // lpCommandLine: командная строка для выполнения
-                NULL,           // lpProcessAttributes: NULL
-                NULL,           // lpThreadAttributes: NULL
-                FALSE,          // bInheritHandles: FALSE
-                0,              // dwCreationFlags: 0
-                NULL,           // lpEnvironment: NULL
-                NULL,           // lpCurrentDirectory: NULL
-                &si,            // lpStartupInfo: указатель на STARTUPINFO
-                &pi             // lpProcessInformation: указатель на PROCESS_INFORMATION
-        )) {
+                NULL,     // lpApplicationName: путь к исполняемому файлу
+                command,  // lpCommandLine: командная строка для выполнения
+                NULL,     // lpProcessAttributes: NULL
+                NULL,     // lpThreadAttributes: NULL
+                FALSE,    // bInheritHandles: FALSE
+                0,        // dwCreationFlags: 0
+                NULL,     // lpEnvironment: NULL
+                NULL,     // lpCurrentDirectory: NULL
+                &si,      // lpStartupInfo: указатель на STARTUPINFO
+                &pi       // lpProcessInformation: указатель на PROCESS_INFORMATION
+                )) {
             printf("Failed to start process (%d)\n", GetLastError());
             continue;
         }
@@ -48,7 +48,7 @@ int main() {
         QueryPerformanceCounter(&end);
 
         elapsedTime =
-                (double)(end.QuadPart - start.QuadPart) / frequency.QuadPart;
+            (double)(end.QuadPart - start.QuadPart) / frequency.QuadPart;
         printf("Program executed in %.3f seconds\n", elapsedTime);
 
         CloseHandle(pi.hProcess);

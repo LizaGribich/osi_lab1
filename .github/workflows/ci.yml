@@ -48,4 +48,4 @@ jobs:
       - name: Install clang-format
         run: choco install llvm -y
       - name: Run formatter
-        run: clang-format -i *.c
+        run: clang-format --dry-run --Werror *.c

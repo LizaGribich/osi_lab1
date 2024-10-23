@@ -10,7 +10,7 @@ int minDistance(const int dist[], const int sptSet[]) {
 
     for (int v = 0; v < VERTEX_COUNT; v++) {
         if (sptSet[v] == 0 && dist[v] <= min) {
-            min = dist[v];
+            min       = dist[v];
             min_index = v;
         }
     }
@@ -23,7 +23,7 @@ void dijkstra(int graph[VERTEX_COUNT][VERTEX_COUNT], int src) {
     int sptSet[VERTEX_COUNT];
 
     for (int i = 0; i < VERTEX_COUNT; i++) {
-        dist[i] = INT_MAX;
+        dist[i]   = INT_MAX;
         sptSet[i] = 0;
     }
 
@@ -52,14 +52,12 @@ double get_time_in_seconds() {
 
 int main() {
     int graph[VERTEX_COUNT][VERTEX_COUNT] = {
-            {  0,  7,  9,  0,  0, 14 },
-            {  7,  0, 10, 15,  0,  0 },
-            {  9, 10,  0, 11,  0,  2 },
-            {  0, 15, 11,  0,  6,  0 },
-            {  0,  0,  0,  6,  0,  9 },
-            { 14,  0,  2,  0,  9,  0 }
-    };
-
+        {0, 7, 9, 0, 0, 14},
+        {7, 0, 10, 15, 0, 0},
+        {9, 10, 0, 11, 0, 2},
+        {0, 15, 11, 0, 6, 0},
+        {0, 0, 0, 6, 0, 9},
+        {14, 0, 2, 0, 9, 0}};
 
     double start = get_time_in_seconds();
 

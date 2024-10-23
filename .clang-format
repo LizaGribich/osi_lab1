@@ -1,5 +1,18 @@
 BasedOnStyle: Google
 IndentWidth: 4
-ColumnLimit: 80
+ColumnLimit: 0
 AlignConsecutiveAssignments: true
 AlignConsecutiveDeclarations: true
+BreakBeforeBraces: Custom
+BraceWrapping:
+  BeforeElse: false
+  IndentBraces: false
+  BeforeCatch: false
+  SplitEmptyFunction: false
+  AfterFunction: false
+  AfterControlStatement: false
+  AfterStruct: true
+  AfterEnum: true
+AllowAllConstructorInitializersOnNextLine: true
+BinPackArguments: false
+BinPackParameters: false
