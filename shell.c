@@ -1,15 +1,15 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <windows.h>
+#include <stdlib.h>
 
 #define MAX_CMDS 10
 #define BUFFER_SIZE 1024
 
 int main() {
-    char          command[BUFFER_SIZE];
+    char command[BUFFER_SIZE];
     LARGE_INTEGER frequency, start, end;
-    double        elapsedTime;
+    double elapsedTime;
 
     QueryPerformanceFrequency(&frequency);
 
@@ -38,7 +38,7 @@ int main() {
         }
 
         char *commands[MAX_CMDS];
-        int   num_commands = 0;
+        int num_commands = 0;
 
         char *cmdline = _strdup(command);
         if (!cmdline) {
@@ -47,27 +47,27 @@ int main() {
         }
 
         char *next_token = NULL;
-        char *token      = strtok_s(cmdline, "|", &next_token);
+        char *token = strtok_s(cmdline, "|", &next_token);
         while (token != NULL && num_commands < MAX_CMDS) {
             while (*token == ' ') token++;
-            char *end = token + strlen(token) - 1;
-            while (end > token && (*end == ' ' || *end == '\n')) {
-                *end = '\0';
-                end--;
+            char *token_end = token + strlen(token) - 1;
+            while (token_end > token && (*token_end == ' ' || *token_end == '\n')) {
+                *token_end = '\0';
+                token_end--;
             }
             commands[num_commands++] = token;
-            token                    = strtok_s(NULL, "|", &next_token);
+            token = strtok_s(NULL, "|", &next_token);
         }
 
         HANDLE hPipeRead[MAX_CMDS], hPipeWrite[MAX_CMDS];
         for (int i = 0; i < MAX_CMDS; i++) {
-            hPipeRead[i]  = NULL;
+            hPipeRead[i] = NULL;
             hPipeWrite[i] = NULL;
         }
 
         SECURITY_ATTRIBUTES saAttr;
-        saAttr.nLength              = sizeof(SECURITY_ATTRIBUTES);
-        saAttr.bInheritHandle       = TRUE;
+        saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+        saAttr.bInheritHandle = TRUE;
         saAttr.lpSecurityDescriptor = NULL;
 
         for (int i = 0; i < num_commands - 1; i++) {
@@ -89,13 +89,13 @@ int main() {
             si.dwFlags |= STARTF_USESTDHANDLES;
 
             if (i == 0) {
-                si.hStdInput  = GetStdHandle(STD_INPUT_HANDLE);
+                si.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
                 si.hStdOutput = (num_commands > 1) ? hPipeWrite[i] : GetStdHandle(STD_OUTPUT_HANDLE);
             } else if (i == num_commands - 1) {
-                si.hStdInput  = hPipeRead[i - 1];
+                si.hStdInput = hPipeRead[i - 1];
                 si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
             } else {
-                si.hStdInput  = hPipeRead[i - 1];
+                si.hStdInput = hPipeRead[i - 1];
                 si.hStdOutput = hPipeWrite[i];
             }
 
@@ -137,7 +137,7 @@ int main() {
         elapsedTime = (double)(end.QuadPart - start.QuadPart) / frequency.QuadPart;
         printf("Program executed in %.3f seconds\n", elapsedTime);
 
-    cleanup:
+        cleanup:
         for (int i = 0; i < MAX_CMDS; i++) {
             if (hPipeRead[i]) CloseHandle(hPipeRead[i]);
             if (hPipeWrite[i]) CloseHandle(hPipeWrite[i]);
