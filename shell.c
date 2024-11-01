@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,6 +6,16 @@
 
 #define MAX_CMDS 10
 #define BUFFER_SIZE 1024
+
+int is_empty_or_whitespace(const char *str) {
+    while (*str) {
+        if (!isspace((unsigned char)*str)) {
+            return 0;
+        }
+        str++;
+    }
+    return 1;
+}
 
 int main() {
     char          command[BUFFER_SIZE];
@@ -21,12 +32,17 @@ int main() {
 
         command[strcspn(command, "\n")] = 0;
 
+        if (is_empty_or_whitespace(command)) {
+            continue;
+        }
+
         if (strcmp(command, "exit") == 0) {
             break;
         }
 
         if (strncmp(command, "cd ", 3) == 0) {
             const char *path = command + 3;
+            while (*path == ' ') path++;
             if (SetCurrentDirectory(path)) {
                 char cwd[MAX_PATH];
                 GetCurrentDirectory(sizeof(cwd), cwd);
@@ -46,17 +62,36 @@ int main() {
             continue;
         }
 
-        char *next_token = NULL;
-        char *token      = strtok_s(cmdline, "|", &next_token);
+        char *next_token       = NULL;
+        char *token            = strtok_s(cmdline, "|", &next_token);
+        int   error_in_command = 0;
+
         while (token != NULL && num_commands < MAX_CMDS) {
             while (*token == ' ') token++;
             char *token_end = token + strlen(token) - 1;
-            while (token_end > token && (*token_end == ' ' || *token_end == '\n')) {
+            while (token_end > token && isspace((unsigned char)*token_end)) {
                 *token_end = '\0';
                 token_end--;
             }
+
+            if (is_empty_or_whitespace(token)) {
+                printf("Syntax error: empty between pipes\n");
+                error_in_command = 1;
+                break;
+            }
+
             commands[num_commands++] = token;
             token                    = strtok_s(NULL, "|", &next_token);
+        }
+
+        if (!error_in_command && command[strlen(command) - 1] == '|') {
+            printf("Syntax error: command cant end with pipe \n");
+            error_in_command = 1;
+        }
+
+        if (error_in_command) {
+            free(cmdline);
+            continue;
         }
 
         HANDLE hPipeRead[MAX_CMDS], hPipeWrite[MAX_CMDS];
@@ -135,7 +170,7 @@ int main() {
 
         QueryPerformanceCounter(&end);
         elapsedTime = (double)(end.QuadPart - start.QuadPart) / frequency.QuadPart;
-        printf("Program executed in %.3f seconds\n", elapsedTime);
+        printf("\nProgram executed in %.3f seconds\n", elapsedTime);
 
     cleanup:
         for (int i = 0; i < MAX_CMDS; i++) {
